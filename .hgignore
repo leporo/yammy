@@ -1,0 +1,6 @@
+syntax: glob
+.project
+.pydevproject
+*.pyc
+tmp
+language-specs
