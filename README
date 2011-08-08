@@ -1,60 +1,10 @@
 Yammy: A better way to create a Django/Jinja template
 =====================================================
 
-Yammy is not a template engine. It does not handle expressions or condition blocks.
-It just provides another way to create and maintain an HTML template.
+Yammy is not a template engine. It's translator does not handle expressions or condition blocks.
+It's just another way to create and maintain an HTML template.
 
     Yammy Template → Django/Jinja HTML Template → Web Page
-
-Advantages
-----------
-
-### Readability
-
-There are no extra brackets and quotes. Block nesting is defined by their indentation.
-
-### Better collaboration
-
-It's hard to work on the same HTML template with someone else.
-Changes made to long lines with many attribute definitions are difficult to merge.
-Nested single row condition statements are difficult to understand and maintain.
-
-With Yammy you may split your template to as many lines as you wish and indent nested blocks.
-
-It's easier to figure out what has been changed:
-
-#### HTML template diff
-
-    - <div class="row{% if needs_more_light }highlighted_less{% else %}highlighted{% endif %}">Highlighted row</div>
-    + <div class="row{% if needs_more_light }highlighted_more{% else %}highlighted{% endif %}">Highlighted row</div>
-
-
-#### Yammy template diff
-
-    -            highlighted_less
-    +            highlighted_more
-
-### Compact resulting web pages
-
-The Yammy translator produces a compact HTML code without extra space characters.
-With Yammy you'll never have a HTML code like this on your site:
-
-    <div>
-    
-    
-    
-        <div>
-    The first line.
-      <br/>
-
-            The second line.
-        
-        </div>
-    
-    
-    
-    
-    </div>
 
 Usage
 -----
@@ -137,6 +87,56 @@ Yammy does not support multiline comments. Lines starting with the '#' (hash cha
         - id id
         # write inner text
         | Inner Text
+
+Advantages
+----------
+
+### Readability
+
+There are no extra brackets and quotes. Block nesting is defined by their indentation.
+
+### Better collaboration
+
+It's hard to work on the same HTML template with someone else.
+Changes made to long lines with many attribute definitions are difficult to merge.
+Nested single row condition statements are difficult to understand and maintain.
+
+With Yammy you may split your template to as many lines as you wish and indent nested blocks.
+
+It's easier to figure out what has been changed:
+
+#### HTML template diff
+
+    - <div class="row{% if needs_more_light }highlighted_less{% else %}highlighted{% endif %}">Highlighted row</div>
+    + <div class="row{% if needs_more_light }highlighted_more{% else %}highlighted{% endif %}">Highlighted row</div>
+
+
+#### Yammy template diff
+
+    -            highlighted_less
+    +            highlighted_more
+
+### Compact resulting web pages
+
+The Yammy translator produces a compact HTML code without extra space characters.
+With Yammy you'll never have a HTML code like this on your site:
+
+    <div>
+    
+    
+    
+        <div>
+    The first line.
+      <br/>
+
+            The second line.
+        
+        </div>
+    
+    
+    
+    
+    </div>
 
 Sample
 ------
