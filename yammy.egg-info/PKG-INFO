@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: yammy
+Version: 0.1dev
+Summary: Yammy: A better way to create a Django/Jinja template
+Home-page: https://bitbucket.org/quasinerd/yammy
+Author: quasinerd
+Author-email: UNKNOWN
+License: GPL
+Description: Yammy is not a template engine. It does not handle expressions or condition blocks. It just provides another way to create and maintain an HTML template.
+Keywords: templates html django python
+Platform: UNKNOWN
