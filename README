@@ -2,7 +2,7 @@ Yammy: A better way to create a Django/Jinja template
 =====================================================
 
 Yammy is not a template engine. It's translator does not handle expressions or condition blocks.
-It's just another way to create and maintain an HTML template.
+Yammy strips unnecessary parts from HTML template and makes the template patch-exchange-friendly.  
 
     Yammy Template → Django/Jinja HTML Template → Web Page
 

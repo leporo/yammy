@@ -1,4 +1,4 @@
-from string import ascii_letters
+from string import ascii_letters, digits
 
 
 UNARY_HTML_TAGS = set('area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed'.split(','))
@@ -119,17 +119,21 @@ class YammyBlockTranslator(object):
 
 	def translate_inner_line(self, context=None):
 		first_line_char = self.input.line[0]
-		line_translater = None
+		line_translator = None
 		for line_type in self.inner_line_types:
 			if first_line_char in line_type[0]:
-				line_translater = line_type[1]
+				line_translator = line_type[1]
 				break
-		if line_translater:
-			line_translater(self.input, self.output, parent=self).translate(context=context)
+		if line_translator:
+			line_translator(self.input, self.output, parent=self).translate(context=context)
 		else:
-			self.output.write(self.input.line)
+			l = self.input.line
+			if l[0] == '\\':
+				l = l[1:]  
+			self.output.write(l)
+			self.move_to_next_line()
 
-	def get_line_part(self, line, delimiters=' ', allow_quotes=False):
+	def get_line_part(self, line, delimiters=' ', allow_quotes=False, allowed_chars=None):
 		'''
 		Returns (part, line_remainder)
 		'''
@@ -144,11 +148,11 @@ class YammyBlockTranslator(object):
 				n_position = len(result) + 2
 			else:
 				for c in line:
-					if c in delimiters:
-						result = line[:n_position]
+					if c in delimiters or (allowed_chars and c not in allowed_chars):
 						break
 					else:
 						n_position += 1
+				result = line[:n_position]
 		return (result.strip(), line[n_position:].strip())
 
 
@@ -163,15 +167,19 @@ class YammyHTMLAttribute(YammyBlockTranslator):
 
 	def translate(self, context=None):
 		line = self.input.line[1:].strip()
-		(attribute_name, line) = self.get_line_part(line, delimiters=' ', allow_quotes=False)
+		(attribute_name, line) = self.get_line_part(line, delimiters=' ', allow_quotes=False, allowed_chars=ascii_letters + digits)
 		(attribute_value, line) = self.get_line_part(line, delimiters='', allow_quotes=False)
 
-		self.output.write(' %s="%s' % (attribute_name, attribute_value))
+		if attribute_name:
+			self.output.write(' %s="%s' % (attribute_name, attribute_value))
+		else:
+			self.output.write(' %s' % attribute_value)
 		
 		self.move_to_next_line()
 		self.translate_inner_lines()
 
-		self.output.write('"')
+		if attribute_name:
+			self.output.write('"')
 
 
 class YammyHTMLInnerText(YammyBlockTranslator):

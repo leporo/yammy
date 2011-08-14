@@ -1,0 +1,37 @@
+ol.someclass#some_id
+	li.item
+		- style
+			color:black;
+			background:
+						{% if error %}
+							red;
+						{% else %}
+							{% if warning %}
+								yellow;
+							{% else %}
+								transparent;
+							{% endif %}
+						{% endif %}
+		- title 
+			some extra information
+
+		| First item text
+		| Next Line text
+
+	li.item Second item text
+	
+	li
+		- {{ attribute_macro(args) }}
+		| Third item text
+
+	li
+		- class
+			item
+			{% if last_item %}
+				\ last_item_class
+			{% endif %}
+		|Not yet
+
+
+	li."item last_item_class"
+		|Last item text
