@@ -1,0 +1,44 @@
+{% extends "base_popup.html" %}
+{% block popup_title %}
+    {{_('Sharing settings')}}
+{%endblock%}
+{% block popup_content %}
+<div class="settings_content" style="width: 800px;">
+    {{ super() }}
+    <div class="form_errors" id="form_errors" style="display:none;"></div>
+    <div class="form_content">
+        <div class="menu_items">
+            <div class="menu_item line_height general_tab">{{_('General')}}</div>
+            <div class="menu_item line_height emails_rights_tab">{{_('Emails and Rights')}}</div>
+        </div>
+        <form class="popup_form"{% if sharing_settings_id%} action="/projects/sharing_settings/{sharing_settings_id}}/"{% else %} action="/projects/sharing_settings/"{% endif %} method="post">
+            <div class="settings_main_block">
+                <div class="keyword_module">
+                    <div id="general_tab" class="menu_tab">
+                        <h5>{{_("Название Партнера/Сотрудника:")}}</h5>
+                        <div class="form_field">{{form.name}}</div>
+                        <h5>{{_("Проекты, которые будут расшарены для него")}}</h5>
+                        <div class="form_field">{{form.projects}}</div>
+                    </div>
+                    <div id="emails_rights_tab" class="menu_tab">
+                        <h5>test</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="control_container">
+                <div class="controls">
+                    <div class="cancel_btn" class="a_button pop_close" style="float:right;margin-right:0;">
+                        <a onclick="return false" style="display:block">{{ _('Cancel') }}</a>
+                    </div>
+                    <div for="_class_button">
+                        <input id="form_save" class="button" type="submit" value="{{_('Save')}}"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>var tabs = $A($$('.menu_tab')); var menu_items = $A($$('.menu_item')); new TabMenu({ tabs: tabs, menuItems: menu_items });</script>
+{% endblock %}

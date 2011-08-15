@@ -27,6 +27,7 @@ class YammyInputBuffer(object):
 			except StopIteration:
 				self._current_line = ''
 				raise
+			line = line.replace("\t", '    ')
 			l = line.strip()
 			# Skip empty and comment lines
 			if(l and l[0] != '#'):
