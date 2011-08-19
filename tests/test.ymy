@@ -14,12 +14,11 @@ ol.someclass#some_id
 						{% endif %}
 		- title 
 			some extra information
-
 		| First item text
 		| Next Line text
 
 	li.item Second item text
-	
+	# comment	
 	li
 		- {{ attribute_macro(args) }}
 		| Third item text

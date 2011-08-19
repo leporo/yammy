@@ -59,10 +59,10 @@ div.settings_content
 {% endblock %}
 {% block scripts %}
 script
-	| var tabs = $A($$('.menu_tab'));
-    | var menu_items = $A($$('.menu_item'));
-	|  new TabMenu({
-	|      tabs: tabs,
-	|	  menuItems: menu_items
-	|	});
+	var tabs = $A($$('.menu_tab'));
+    var menu_items = $A($$('.menu_item'));
+	new TabMenu({
+		tabs: tabs,
+		menuItems: menu_items
+	});
 {% endblock %}

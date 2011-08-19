@@ -23,7 +23,7 @@ class TestYammyTranslator(unittest.TestCase):
                     p += 1
                 else:
                     break
-            print 'BAD : %s\nGOOD: %s' % (source_content[p:p+10], dest_content[p:p+10])
+            print '\nBAD : %s\nGOOD: %s' % (source_content[p:p+10], dest_content[p:p+10])
         return same
 
     def _translate_file(self, yammy_file, html_file):
@@ -63,7 +63,7 @@ div
         module_path = os.sep.join(__name__.split('.')[:-1])
         filenames = tuple(os.walk(module_path))[0][2]
         for filename in filenames:
-            if '.ymy' in filename:
+            if filename[-4:] == '.ymy':
                 self._translate_file(
                     os.sep.join([module_path, filename]),
                     os.sep.join([module_path, filename.replace('.ymy', '.html')])

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hrc PUBLIC "-//Cail Lomecb//DTD Colorer HRC take5//EN"
+  "http://colorer.sf.net/2003/hrc.dtd">
+<hrc version="take5" xmlns="http://colorer.sf.net/2003/hrc"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://colorer.sf.net/2003/hrc
+                         http://colorer.sf.net/2003/hrc.xsd">
+
+    <annotation>
+        <documentation>
+            Yammy syntax description for Colorer Library.
+            http://bitbucket/quasinerd/yammy
+        </documentation>
+        <appinfo>
+            <prototype name="yammy" group="rare" description="yammy">
+                <location link="rare/yammy.hrc"/>
+                <filename>/\.[^p]??ymy?$/i</filename>
+            </prototype>
+            <require>
+                <type name="html-css"/>
+                <type name="jScript"/>
+            </require>     
+        </appinfo>    
+    </annotation>
+
+    <import type="jScript"/>
+
+    <type name="yammy">
+
+        <!--
+            def:StringContent - deep blue
+            def:Operator - blue
+            def:Keyword - red bold
+            def:StructKeyword - red
+            def:FunctionKeyword - red
+            def:NumberBin - green
+        -->
+        <region name="yamComment"        parent="def:Comment"/>
+        <region name="yamTag"            parent="def:Keyword"/>
+        <region name="yamAttribute"      parent="def:FunctionKeyword"/>
+        <region name="yamInnerText"      parent="def:StringContent"/>
+        <region name="yamExpression"     parent="def:StructKeyword"/>
+        <!--
+        <region name="yamJavaScript"     parent="def:StructKeyword"/>
+        <region name="yamCSS"            parent="def:StructKeyword"/>
+        -->
+
+        <scheme name="yammy">
+            <block start="/^\s*#/" end="/$/" region="yamComment" scheme="def:Comment"/>
+            <!--
+            <regexp match="/^\s*-\s*\w+/" region="yamAttribute" scheme="def:FunctionKeyword"/>
+            -->
+            <regexp match="/^\s*\|.*$/" region="yamInnerText" scheme="def:StringContent"/>
+            <regexp match="/\{\{.*\}\}/" region="yamExpression" scheme="def:StructKeyword"/>
+            <regexp match="/\{%.*%\}/" region="yamExpression" scheme="def:StructKeyword"/>
+            <regexp match="/^\s*\w+/" region="yamTag" scheme="def:Keyword"/>
+            <!--
+            <block start="/^script/i" end="/^\S/" region="yamJavaScript" scheme="jScript"/>
+            <block start="/^style/i" end="/\S/" scheme="html-css:css" region="yamCSS"/>
+            -->
+        </scheme>
+
+    </type>
+</hrc>
