@@ -1,3 +1,4 @@
+import weakref
 from string import ascii_letters, digits
 
 
@@ -95,7 +96,10 @@ class YammyBlockTranslator(object):
         self.input = input
         self.output = output
         self.identation = input.line_identation
-        self.parent_block = parent
+        if parent:
+            self.parent_block = weakref.proxy(parent)
+        else:
+            self.parent_block = None
 
     def move_to_next_line(self):
         res = True 
@@ -241,13 +245,9 @@ class YammyHTMLTag(YammyBlockTranslator):
             tag = 'div' 
         
         self.tag = tag.lower()
-        self.output.write('<%s' % self.tag)
-        for attr, value in (('id', tag_id), ('class', tag_class)):
-            if value:
-                self.output.write(' %s="%s"' % (attr, value))
-        self.inner_text = tag_text
 
-        if self.tag.lower() in SCRIPT_HTML_TAGS:
+        if self.tag in SCRIPT_HTML_TAGS:
+            self.output.write('\n')
             self.inner_line_types = (
                 ('-', YammyHTMLAttribute),
                 ('', YammyHTMLScript),
@@ -259,10 +259,18 @@ class YammyHTMLTag(YammyBlockTranslator):
                 (ascii_letters, YammyHTMLTag),
             )
 
+        self.output.write('<%s' % self.tag)
+        for attr, value in (('id', tag_id), ('class', tag_class)):
+            if value:
+                self.output.write(' %s="%s"' % (attr, value))
+        self.inner_text = tag_text
+
         self.move_to_next_line()
         self.translate_inner_lines()
 
         self.write_end_tag()
+        if self.tag in SCRIPT_HTML_TAGS:
+            self.output.write('\n')
 
     def close_start_tag(self):
         if not self.start_tag_closed:

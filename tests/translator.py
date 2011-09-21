@@ -69,6 +69,5 @@ div
                     os.sep.join([module_path, filename.replace('.ymy', '.html')])
                 )
 
-
 if __name__ == "__main__":
     unittest.main()

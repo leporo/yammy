@@ -1,0 +1,94 @@
+{% set title = _('Sharing Projects') %} 
+{% extends 'base_report.html' %}
+{% block title %}{{ title }}{{ super() }}{% endblock %}
+{% block report_title %}{{ title }}{% endblock %}
+
+{% import 'style_macros.html' as style %}
+{% set dark_col = cycler(False, True) %}
+{% set dark_row = cycler(True, False) %}
+
+{% block report_settings %}
+div
+    - class header_nav_cell add
+    a   
+        - class form_popattach btn_add
+        - link /projects/sharing_settings/
+        span
+            - class navbtn_item_title
+            | {{ _('Add') }}
+{% endblock %}
+
+{% block report %}
+{% if not report %}
+div
+    - class cap-area
+    div
+        - class cap-area-head
+        p
+            | {{ _('Report Mailing is a special tool that can help you build an automated reporting system for your projects, no matter how many projects you run simultaneously.') }}
+    div
+        - class cap-area-body
+        div
+            - class cap-area-body-part
+            p
+                | {{ _('The main goal of the Report Mailing system is to send reports by email that you consider important.') }}
+        div
+            - class cap-area-body-part
+            p
+                | {{ _('Reports are sent immediately after they are generated to keep you and your clients or colleagues informed on any changes that have occurred anywhere.') }}
+{% else %}
+{% set dummy = dark_row.reset() %}
+{% set dummy = dark_col.reset() %}
+table.stat_table
+    thead
+        tr
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                | партнер
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                | {{ _('Emails') }}
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                | {{ _('Sites') }}
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+    tbody
+        | {% for sharing in report %}
+        tr
+            - class hoverable
+            {% set dummy = dark_col.reset() %}
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                | {{sharing.name}}
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                | {% for email in sharing.email_list %}
+                p
+                    | {{ email }}
+                | {% endfor %}
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                | {% for domain in sharing.domain_list %}
+                p
+                    | {{ domain }}
+                | {% endfor %}
+            td
+                - class {{ style.col_class[dark_col.next()] }}
+                a
+                    - class form_popattach
+                    - link /projects/sharing_settings/{{sharing.id}}/
+                    | edit
+        | {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{% if not report %}
+script
+    - src /js/tremors.js
+    - type text/javascript
+{% endif %}
+{% endblock %}
