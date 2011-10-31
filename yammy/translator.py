@@ -209,7 +209,7 @@ class YammyHTMLScript(YammyBlockTranslator):
         if self.parent_block and isinstance(self.parent_block, YammyHTMLTag):
             self.parent_block.close_start_tag()
         if (context is None) or context.get('text_line_no', 0): 
-            self.output.write(' ')
+            self.output.write('\n')
         if isinstance(context, dict):
             context['text_line_no'] = context.get('text_line_no', 0) + 1
         self.output.write(self.input.line.strip())
