@@ -23,7 +23,7 @@ class TestYammyTranslator(unittest.TestCase):
                     p += 1
                 else:
                     break
-            print '\nBAD : %s\nGOOD: %s' % (source_content[p:p+10], dest_content[p:p+10])
+            print '\nBAD : %s\nGOOD: %s' % (source_content[p-10:p+10], dest_content[p-10:p+10])
         return same
 
     def _translate_file(self, yammy_file, html_file):
@@ -46,6 +46,17 @@ class TestYammyTranslator(unittest.TestCase):
         self._check(
             'div.class#id',
             '<div id="id" class="class"></div>'
+        )
+
+    def test_idents(self):
+        self._check(
+            '''
+            div.settings_main_block
+                        h5    
+                            | {{_("Label:")}}
+\t                    div
+            ''',
+            '<div class="settings_main_block"><h5>{{_("Label:")}}</h5><div></div></div>'
         )
 
     def test_inner_text(self):

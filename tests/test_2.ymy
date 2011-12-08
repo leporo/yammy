@@ -18,22 +18,22 @@ div.settings_content
 				| {{_('Emails and Rights')}}
 				
 		form.popup_form
-			{% if sharing_settings_id%}
+			- {% if sharing_settings_id%}
 			- action /projects/sharing_settings/{sharing_settings_id}}/
-			{% else %}
+			- {% else %}
 			- action /projects/sharing_settings/
-			{% endif %}
+			- {% endif %}
 			- method post
 			div.settings_main_block
 				div.keyword_module
 					div#general_tab.menu_tab
 						h5	
-        					| {{_("Название Партнера/Сотрудника:")}}
+							| {{_("Название Партнера/Сотрудника:")}}
         				div.form_field
         				    | {{form.name}} 
-        				h5		
+         				h5		
         					| {{_("Проекты, которые будут расшарены для него")}}
-        				div.form_field
+          				div.form_field
         				    | {{form.projects}}
         				    
         			div#emails_rights_tab.menu_tab

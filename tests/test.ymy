@@ -1,3 +1,14 @@
+div
+	- class a_keywords_form
+	div
+		- class form_field
+		select
+			- name tags_list
+			- style padding: 0
+			option
+				- value {{_('All')}}
+				- onClick kfl.change_filter(null)
+				|{{_('All')}}
 ol.someclass#some_id
 	li.item
 		- style

@@ -5,6 +5,8 @@ from string import ascii_letters, digits
 UNARY_HTML_TAGS = set('area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed'.split(','))
 SCRIPT_HTML_TAGS = ('script', 'style')
 
+TAB_WIDTH = 4 # Replace tab characters with 4 space characters
+
 
 class TranslatorError(Exception):
     pass
@@ -29,10 +31,18 @@ class YammyInputBuffer(object):
             except StopIteration:
                 self._current_line = ''
                 raise
-            line = line.replace("\t", '    ')
             l = line.strip()
             # Skip empty and comment lines
             if(l and l[0] != '#'):
+                # replace tabs with spaces
+                p = 0
+                while (p < len(line)):
+                    if line[p] == '\t':
+                        tab_width = ((p + TAB_WIDTH) / TAB_WIDTH) * TAB_WIDTH - p
+                        line = line[:p] + ' ' * tab_width + line[p+1:]
+                        p += tab_width
+                    else:
+                        p += 1
                 break
         self._identation = line.find(l)
         self._current_line = l 
@@ -128,7 +138,7 @@ class YammyBlockTranslator(object):
         line_translator = None
         for line_type in self.inner_line_types:
             first_char = line_type[0] 
-            if not first_char or first_line_char in first_char:
+            if not first_char or (first_line_char in first_char):
                 line_translator = line_type[1]
                 break
         if line_translator:
@@ -203,6 +213,20 @@ class YammyHTMLInnerText(YammyBlockTranslator):
         self.move_to_next_line()
 
 
+class YammyHTMLInnerExpression(YammyBlockTranslator):
+
+    def translate(self, context=None):
+        if self.parent_block and isinstance(self.parent_block, YammyHTMLTag):
+            self.parent_block.close_start_tag()
+        if (context is None) or context.get('text_line_no', 0): 
+            self.output.write(' ')
+        if isinstance(context, dict):
+            context['text_line_no'] = context.get('text_line_no', 0) + 1
+        self.output.write(self.input.line.strip())
+
+        self.move_to_next_line()
+
+
 class YammyHTMLScript(YammyBlockTranslator):
 
     def translate(self, context=None):
@@ -257,6 +281,7 @@ class YammyHTMLTag(YammyBlockTranslator):
                 ('-', YammyHTMLAttribute),
                 ('|', YammyHTMLInnerText),
                 (ascii_letters, YammyHTMLTag),
+                (None, YammyHTMLInnerExpression),
             )
 
         self.output.write('<%s' % self.tag)

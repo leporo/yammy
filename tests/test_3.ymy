@@ -45,8 +45,7 @@ table.stat_table
             td
                 - class {{ style.col_class[dark_col.next()] }}
                 | партнер
-            td
-                - class {{ style.col_class[dark_col.next()] }}
+            td."{{ style.col_class[dark_col.next()] }}"
                 | {{ _('Emails') }}
             td
                 - class {{ style.col_class[dark_col.next()] }}
@@ -54,7 +53,7 @@ table.stat_table
             td
                 - class {{ style.col_class[dark_col.next()] }}
     tbody
-        | {% for sharing in report %}
+        {% for sharing in report %}
         tr
             - class hoverable
             {% set dummy = dark_col.reset() %}
@@ -79,7 +78,7 @@ table.stat_table
                     - class form_popattach
                     - link /projects/sharing_settings/{{sharing.id}}/
                     | edit
-        | {% endfor %}
+        {% endfor %}
 {% endif %}
 {% endblock %}
 

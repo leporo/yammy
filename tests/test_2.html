@@ -11,7 +11,7 @@
             <div class="menu_item line_height general_tab">{{_('General')}}</div>
             <div class="menu_item line_height emails_rights_tab">{{_('Emails and Rights')}}</div>
         </div>
-        <form class="popup_form"{% if sharing_settings_id%} action="/projects/sharing_settings/{sharing_settings_id}}/"{% else %} action="/projects/sharing_settings/"{% endif %} method="post">
+        <form class="popup_form" {% if sharing_settings_id%} action="/projects/sharing_settings/{sharing_settings_id}}/" {% else %} action="/projects/sharing_settings/" {% endif %} method="post">
             <div class="settings_main_block">
                 <div class="keyword_module">
                     <div id="general_tab" class="menu_tab">
