@@ -97,9 +97,9 @@ Tag nesting is being declared using indentation:
 Yammy does not support multiline comments.
 To add a single-line comment start it with the '#' character: 
 
-    Yammy                     HTML
-    ------------------------- -----------------------------------------------------------
-    div                       <div class="class" id="id">Inner Text</div>
+    Yammy                           HTML
+    ------------------------------- -----------------------------------------------------
+    div                             <div class="class" id="id">Inner Text</div>
         # let's define a class
         - class class
         # let's specify the id
