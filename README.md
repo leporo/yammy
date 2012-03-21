@@ -1,13 +1,13 @@
 Yammy: A better way to create a Django/Jinja template
 =====================================================
 
-Yammy is not a template engine. It's translator does not handle expressions or condition blocks.
-Yammy strips unnecessary parts from HTML template and makes the template patch-exchange-friendly.  
-
-    Yammy Template → Django/Jinja HTML Template → Web Page
+Yammy is not a template engine. The Yammy's translator does not handle expressions or condition blocks.
+Yammy strips unnecessary parts from HTML template and makes the template collaboration-friendly.  
 
 Basic Usage
 -----------
+
+Yammy Template → Django/Jinja HTML Template → Web Page
 
     >>> from yammy import yammy_to_html
     >>> yammy_to_html('template.yammy', 'template.html')
@@ -21,9 +21,9 @@ Jinja2 Integration
 Yammy comes with the Jinja2 integration module.
 The simplest way to enable a Yammy template processing in your application looks roughly like this:
 
-  from jinja2 import Environment
-  from yammy import YammyPackageLoader
-  env = Environment(loader=YammyPackageLoader('yourapplication', 'templates'))
+    from jinja2 import Environment
+    from yammy import YammyPackageLoader
+    env = Environment(loader=YammyPackageLoader('yourapplication', 'templates'))
 
 Make sure you use .ymy or .yammy extension for your Yammy template files. 
 Note you can also mix Yammy templates with HTML ones.  
@@ -137,4 +137,4 @@ So it's much easier to figure out what has been changed:
 
 ### Compact resulting web pages
 
-The Yammy translator produces a compact HTML code without extra space characters.
+The Yammy translator produces compact HTML code without extra space characters.
