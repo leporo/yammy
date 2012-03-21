@@ -1,0 +1,12 @@
+div
+    - {% if condition %}
+    -	style
+			display:block;
+	- {% endif %}
+	{{ _('Inner text') }}
+div.class#id
+div#id.class
+div.my-class-name
+div.my_class_name
+div
+	- my_custom_attr my-custom-value

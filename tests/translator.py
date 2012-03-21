@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from yammy.translator import yammy_to_html_string, yammy_to_html
+from yammy.translator import YammyInputBuffer, yammy_to_html_string, yammy_to_html
 
 
 class TestYammyTranslator(unittest.TestCase):
@@ -39,13 +39,13 @@ class TestYammyTranslator(unittest.TestCase):
     def test_css_class_id(self):
         self._check(
             'div.class#id some text',
-            '<div id="id" class="class">some text</div>'
+            '<div class="class" id="id">some text</div>'
         )
 
     def test_css_class_id_no_text(self):
         self._check(
             'div.class#id',
-            '<div id="id" class="class"></div>'
+            '<div class="class" id="id"></div>'
         )
 
     def test_idents(self):
@@ -70,6 +70,22 @@ div
             '<div class="class" id="id">some text and next text line</div>'
         )
 
+    def test_escape(self):
+        self._check("div\n" +
+                    "    \- some text", 
+                    '<div>- some text</div>');
+
+    def test_empty_string(self):
+        self._check('', '');
+
+    def test_inline_attributes(self):
+        self._check('input[type="submit"]', 
+                    '<input type="submit"/>');
+        self._check('option[value="10"][selected]', 
+                    '<option selected="selected" value="10"></option>');
+        self._check('a.class#id[href="/"][id="new_id"] reference', 
+                    '<a class="class" href="/" id="new_id">reference</a>');
+
     def test_files(self):
         module_path = os.sep.join(__name__.split('.')[:-1])
         filenames = tuple(os.walk(module_path))[0][2]
@@ -80,5 +96,9 @@ div
                     os.sep.join([module_path, filename.replace('.ymy', '.html')])
                 )
 
-if __name__ == "__main__":
-    unittest.main()
+
+class TestYsammyInputBuffer(unittest.TestCase):
+    
+    def test_iteration(self):
+        for l in YammyInputBuffer(['test']):
+            self.assertEqual(l, 'test')

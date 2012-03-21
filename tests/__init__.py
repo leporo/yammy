@@ -1,7 +1,1 @@
-import unittest
-
-from translator import TestYammyTranslator
-
-
-if __name__ == "__main__":
-	unittest.main()
+from translator import TestYammyTranslator, TestYsammyInputBuffer

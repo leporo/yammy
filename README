@@ -6,8 +6,8 @@ Yammy strips unnecessary parts from HTML template and makes the template patch-e
 
     Yammy Template → Django/Jinja HTML Template → Web Page
 
-Usage
------
+Basic Usage
+-----------
 
     >>> from yammy import yammy_to_html
     >>> yammy_to_html('template.yammy', 'template.html')
@@ -15,12 +15,25 @@ Usage
     >>> from yammy import yammy_to_html_string
     >>> yammy_to_html_string('div\n    | Inner text')
 
+Jinja2 Integration
+------------------
+
+Yammy comes with the Jinja2 integration module.
+The simplest way to enable a Yammy template processing in your application looks roughly like this:
+
+  from jinja2 import Environment
+  from yammy import YammyPackageLoader
+  env = Environment(loader=YammyPackageLoader('yourapplication', 'templates'))
+
+Make sure you use .ymy or .yammy extension for your Yammy template files. 
+Note you can also mix Yammy templates with HTML ones.  
+
 Syntax
 ------
 
-The Yammy syntax has much in common with the HAML, Slim and many other similar template engine languages.
+The Yammy template syntax has much in common with the HAML, Slim and many other similar template engine languages.
 
-Lines are recognized by the first character:
+Line meaning is being recognized by the first line's character:
 
  * Lines starting with Latin letters are HTML tags.
  * Lines starting with the '-' character are HTML tag attributes.
@@ -28,6 +41,7 @@ Lines are recognized by the first character:
  * Lines starting with the '#' character are comments.
 
 Empty lines and trailing spaces are ignored.
+
 
 ### HTML Tags
 
@@ -37,6 +51,7 @@ Empty lines and trailing spaces are ignored.
     
     div                       <div>Some text</div>
         | Some text
+
 
 ### HTML Attributes
 
@@ -51,10 +66,13 @@ Empty lines and trailing spaces are ignored.
         | Inner Text
     
     div."class1 class2"#id    <div class="class1 class2" id="id">Inner Text</div>
+    
+    input[type="submit"]      <input type="submit"/>
+
 
 ### Nesting
 
-Tags are nested with indentation.
+Tag nesting is being declared using indentation:
 
     Yammy                     HTML
     ------------------------- -----------------------------------------------------------
@@ -76,16 +94,17 @@ Tags are nested with indentation.
 
 ### Comments
 
-Yammy does not support multiline comments. Lines starting with the '#' (hash character) will be ignored.
+Yammy does not support multiline comments.
+To add a single-line comment start it with the '#' character: 
 
     Yammy                     HTML
     ------------------------- -----------------------------------------------------------
     div                       <div class="class" id="id">Inner Text</div>
-        # define class
+        # let's define a class
         - class class
-        # specify id
+        # let's specify the id
         - id id
-        # write inner text
+        # let's add the inner text
         | Inner Text
 
 Advantages
@@ -97,13 +116,13 @@ There are no extra brackets and quotes. Block nesting is defined by their indent
 
 ### Better collaboration
 
-It's hard to work on the same HTML template with someone else.
-Changes made to long lines with many attribute definitions are difficult to merge.
-Nested single row condition statements are difficult to understand and maintain.
+It's hard to work on the same HTML template with someone else: changes made to long lines with
+many attribute definitions are difficult to merge, nested single row condition statements are
+difficult to understand and maintain.
 
 With Yammy you may split your template to as many lines as you wish and indent nested blocks.
 
-It's easier to figure out what has been changed:
+So it's much easier to figure out what has been changed:
 
 #### HTML template diff
 
@@ -119,57 +138,3 @@ It's easier to figure out what has been changed:
 ### Compact resulting web pages
 
 The Yammy translator produces a compact HTML code without extra space characters.
-With Yammy you'll never have a HTML code like this on your site:
-
-    <div>
-    
-    
-    
-        <div>
-    The first line.
-      <br/>
-
-            The second line.
-        
-        </div>
-    
-    
-    
-    
-    </div>
-
-Sample
-------
-
-    ol.someclass#some_id
-      li.item
-        - style
-            color:black;
-            background:
-            {% if error %}
-              red;
-            {% else %}
-              {% if warning %}
-                yellow;
-              {% else %}
-                transparent;
-              {% endif %}
-            {% endif %}
-        - title 
-          some extra information
-
-        | First item text
-        | Next Line text
-
-      li.item Second item text
-
-      li
-        - class
-            item
-          {% if last_item %}
-            last_item_class
-          {% endif %}
-        |Not yet
-
-      li."item last_item_class"
-        |Third item text

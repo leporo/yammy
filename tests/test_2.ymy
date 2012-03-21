@@ -28,11 +28,11 @@ div.settings_content
 				div.keyword_module
 					div#general_tab.menu_tab
 						h5	
-							| {{_("Название Партнера/Сотрудника:")}}
+							| {{_("Partner:")}}
         				div.form_field
         				    | {{form.name}} 
          				h5		
-        					| {{_("Проекты, которые будут расшарены для него")}}
+        					| {{_("Partner projects:")}}
           				div.form_field
         				    | {{form.projects}}
         				    
@@ -52,8 +52,7 @@ div.settings_content
 	    				
 	    			div
 	    				- for_class_button
-	    				input#form_save
-	 						- class button
+	    				input.button#form_save
 	 						- type submit
 	 						- value {{_('Save')}} 
 {% endblock %}

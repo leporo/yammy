@@ -14,13 +14,13 @@
         <form class="popup_form" {% if sharing_settings_id%} action="/projects/sharing_settings/{sharing_settings_id}}/" {% else %} action="/projects/sharing_settings/" {% endif %} method="post">
             <div class="settings_main_block">
                 <div class="keyword_module">
-                    <div id="general_tab" class="menu_tab">
-                        <h5>{{_("Название Партнера/Сотрудника:")}}</h5>
+                    <div class="menu_tab" id="general_tab">
+                        <h5>{{_("Partner:")}}</h5>
                         <div class="form_field">{{form.name}}</div>
-                        <h5>{{_("Проекты, которые будут расшарены для него")}}</h5>
+                        <h5>{{_("Partner projects:")}}</h5>
                         <div class="form_field">{{form.projects}}</div>
                     </div>
-                    <div id="emails_rights_tab" class="menu_tab">
+                    <div class="menu_tab" id="emails_rights_tab">
                         <h5>test</h5>
                     </div>
                 </div>
@@ -30,8 +30,8 @@
                     <div class="cancel_btn" class="a_button pop_close" style="float:right;margin-right:0;">
                         <a onclick="return false" style="display:block">{{ _('Cancel') }}</a>
                     </div>
-                    <div for="_class_button">
-                        <input id="form_save" class="button" type="submit" value="{{_('Save')}}"/>
+                    <div for_class_button="">
+                        <input class="button" id="form_save" type="submit" value="{{_('Save')}}"/>
                     </div>
                 </div>
             </div>

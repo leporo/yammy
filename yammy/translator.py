@@ -17,8 +17,8 @@ class YammyInputBuffer(object):
     def __init__(self, input_lines):
         self.input = iter(input_lines)
         self._current_line = None
-        self._identation = 0
-        self._line_number = 0
+        self.indentation = 0
+        self.line_number = 0
 
     def __iter__(self):
         return self
@@ -27,32 +27,29 @@ class YammyInputBuffer(object):
         while True:
             try:
                 line = self.input.next()
-                self._line_number += 1
+                self.line_number += 1
             except StopIteration:
                 self._current_line = ''
                 raise
             l = line.strip()
             # Skip empty and comment lines
             if(l and l[0] != '#'):
-                # replace tabs with spaces
+                # replace leading tabs with spaces
                 p = 0
                 while (p < len(line)):
-                    if line[p] == '\t':
+                    c = line[p]
+                    if c == '\t':
                         tab_width = ((p + TAB_WIDTH) / TAB_WIDTH) * TAB_WIDTH - p
                         line = line[:p] + ' ' * tab_width + line[p+1:]
                         p += tab_width
-                    else:
+                    elif c == ' ':
                         p += 1
+                    else:
+                        break
                 break
-        self._identation = line.find(l)
+        self.indentation = line.find(l)
         self._current_line = l 
         return self._current_line
-
-    @property
-    def line_identation(self):
-        if self._identation is None:
-            self.current_line
-        return self._identation
 
     @property
     def line(self):
@@ -62,10 +59,6 @@ class YammyInputBuffer(object):
             except StopIteration:
                 self._current_line = ''
         return self._current_line
-
-    @property
-    def line_number(self):
-        return self._line_number
         
 
 class YammyOutputBuffer(object):
@@ -102,10 +95,10 @@ class YammyOutputFile(YammyOutputBuffer):
 class YammyBlockTranslator(object):
     inner_line_types = ()
     
-    def __init__(self, input, output, parent=None):
-        self.input = input
-        self.output = output
-        self.identation = input.line_identation
+    def __init__(self, input_stream, output_stream, parent=None):
+        self.input = input_stream
+        self.output = output_stream
+        self.indentation = input_stream.indentation
         if parent:
             self.parent_block = weakref.proxy(parent)
         else:
@@ -119,16 +112,16 @@ class YammyBlockTranslator(object):
             res = False
         return res
 
-    def translate(self, context=None):
-        self.output.write(self.input.line)
-        self.move_to_next_line()
+#    def translate(self, context=None):
+#        self.output.write(self.input.line)
+#        self.move_to_next_line()
 
     def translate_inner_lines(self):
         context = {}
         while self.input.line:
             # Translate nested lines 
-            identation = self.input.line_identation
-            if identation > self.identation:
+            indentation = self.input.indentation
+            if indentation > self.indentation:
                 self.translate_inner_line(context=context)
             else:
                 break
@@ -173,18 +166,11 @@ class YammyBlockTranslator(object):
         return (result.strip(), line[n_position:].strip())
 
 
-class YammyUnexpectedBlock(YammyBlockTranslator):
-
-    def translate(self, context=None):
-        input = self.input
-        raise TranslatorError('Unexpected character "%s" at line %s.' % (input.line[0], input.line_number))
-
-
 class YammyHTMLAttribute(YammyBlockTranslator):
 
     def translate(self, context=None):
         line = self.input.line[1:].strip()
-        (attribute_name, line) = self.get_line_part(line, delimiters=' ', allow_quotes=False, allowed_chars=ascii_letters + digits)
+        (attribute_name, line) = self.get_line_part(line, delimiters=' ', allow_quotes=False, allowed_chars=ascii_letters + digits + '_-:')
         (attribute_value, line) = self.get_line_part(line, delimiters='', allow_quotes=False)
 
         if attribute_name:
@@ -249,24 +235,29 @@ class YammyHTMLTag(YammyBlockTranslator):
         if self.parent_block and isinstance(self.parent_block, YammyHTMLTag):
             self.parent_block.close_start_tag()
         tag = ''
-        tag_id = ''
-        tag_class = ''
+        tag_attributes = {}
         tag_text = ''
         
         line = self.input.line
         while line:
             c = line[0]
-            if c == '.' and not tag_class:
-                (tag_class, line) = self.get_line_part(line[1:], delimiters=' #', allow_quotes=True)
-            elif c == '#' and not tag_id:
-                (tag_id, line) = self.get_line_part(line[1:], delimiters=' .', allow_quotes=False)
-            elif tag or tag_id or tag_class:
+            if c == '.':
+                (tag_attributes['class'], line) = self.get_line_part(line[1:], delimiters=' #[', allow_quotes=True)
+            elif c == '#':
+                (tag_attributes['id'], line) = self.get_line_part(line[1:], delimiters=' .[', allow_quotes=False)
+            elif c == '[':
+                (attr_name, line) = self.get_line_part(line[1:], delimiters='=]', allow_quotes=False)
+                if line and (line[0] != '='):
+                    attr_value = attr_name
+                else:
+                    (attr_value, line) = self.get_line_part(line[1:], delimiters=' ]', allow_quotes=True)
+                tag_attributes[attr_name] = attr_value
+                # Skip the closing square bracket
+                line = line[1:]
+            elif tag or tag_attributes:
                 (tag_text, line) = self.get_line_part(line, delimiters='', allow_quotes=False)
             else:
-                (tag, line) = self.get_line_part(line, delimiters=' .#', allow_quotes=False)
-
-        if not tag:
-            tag = 'div' 
+                (tag, line) = self.get_line_part(line, delimiters=' .#[', allow_quotes=False)
         
         self.tag = tag.lower()
 
@@ -279,15 +270,15 @@ class YammyHTMLTag(YammyBlockTranslator):
         else:
             self.inner_line_types = (
                 ('-', YammyHTMLAttribute),
-                ('|', YammyHTMLInnerText),
+                ('|\\', YammyHTMLInnerText),
                 (ascii_letters, YammyHTMLTag),
                 (None, YammyHTMLInnerExpression),
             )
 
         self.output.write('<%s' % self.tag)
-        for attr, value in (('id', tag_id), ('class', tag_class)):
-            if value:
-                self.output.write(' %s="%s"' % (attr, value))
+        for attr in sorted(tag_attributes.keys()):
+            value = tag_attributes[attr]
+            self.output.write(' %s="%s"' % (attr, value))
         self.inner_text = tag_text
 
         self.move_to_next_line()
@@ -310,12 +301,6 @@ class YammyHTMLTag(YammyBlockTranslator):
         if self.tag not in UNARY_HTML_TAGS:
             self.output.write('</%s>' % self.tag)
 
-    def add_attribute(self, name, value):
-        pass
-
-    def add_text(self, text):
-        self.inner_text += [text]
-
 
 class YammyTranslator(YammyBlockTranslator):
     inner_line_types = (
@@ -323,23 +308,23 @@ class YammyTranslator(YammyBlockTranslator):
     )
 
     def translate(self, context=None):
-        self.identation = -1;
+        self.indentation = -1;
         self.translate_inner_lines()
 
 
 def yammy_to_html_string(in_string):
-    input = YammyInputBuffer(in_string.split('\n'))
+    _input = YammyInputBuffer(in_string.split('\n'))
     output = YammyOutputBuffer()
-    YammyTranslator(input, output).translate()
+    YammyTranslator(_input, output).translate()
     return output.current_line
 
 
 def yammy_to_html(in_file_name, out_file_name):
     in_file = open(in_file_name, 'r')
     try:
-        input = YammyInputBuffer(in_file)
+        _input = YammyInputBuffer(in_file)
         output = YammyOutputFile(out_file_name)
-        YammyTranslator(input, output).translate()
+        YammyTranslator(_input, output).translate()
     finally:
         in_file.close()
     return output.current_line
