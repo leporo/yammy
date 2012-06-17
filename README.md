@@ -2,7 +2,9 @@ Yammy: A better way to create a Django/Jinja template
 =====================================================
 
 Yammy is not a template engine. The Yammy's translator does not handle expressions or condition blocks.
-Yammy strips unnecessary parts from HTML template and makes the template collaboration-friendly.  
+Yammy strips unnecessary parts from HTML template and makes the template collaboration-friendly.
+
+So you may use Yammy Translator as preprocessor with your favorite template engine.
 
 Basic Usage
 -----------
@@ -42,22 +44,17 @@ Line meaning is being recognized by the first line's character:
 
 Empty lines and trailing spaces are ignored.
 
+You may also use CSS-like selectors to define tag's attributes.
 
 ### HTML Tags
 
-    Yammy                     HTML
+    Yammy                     Translates to
     ------------------------- -----------------------------------------------------------
     div Some Text             <div>Some text</div>
     
     div                       <div>Some text</div>
         | Some text
 
-
-### HTML Attributes
-
-    Yammy                     HTML
-    ------------------------- -----------------------------------------------------------
-    
     div.class#id Inner Text   <div class="class" id="id">Inner Text</div>
 
     div                       <div class="class" id="id">Inner Text</div>
@@ -65,7 +62,7 @@ Empty lines and trailing spaces are ignored.
         - id id
         | Inner Text
     
-    div."class1 class2"#id    <div class="class1 class2" id="id">Inner Text</div>
+    div.class1.class2#id      <div class="class1 class2" id="id">Inner Text</div>
     
     input[type="submit"]      <input type="submit"/>
 
@@ -74,15 +71,15 @@ Empty lines and trailing spaces are ignored.
 
 Tag nesting is being declared using indentation:
 
-    Yammy                     HTML
+    Yammy                     Translates to
     ------------------------- -----------------------------------------------------------
     div.outer                 <div class="outer"><div class="inner">Some text</div></div>
         div.inner
             | Some text
 
-### Template engine statements and plain HTML
+### Template Engine Statements and Plain HTML
 
-    Yammy                     HTML
+    Yammy                     Translates to
     ------------------------- -----------------------------------------------------------
     <!doctype html>           <!doctype html><html><body></body></html>
     html
@@ -91,6 +88,20 @@ Tag nesting is being declared using indentation:
     {% if target.hit %}       {% if target.hit %}<div class="hit">Hit!</div>{% endif %}
         div.hit Hit!
     {% endif %}
+
+### Scripts and Styles
+
+    Yammy                           Translates to
+    ------------------------------- -----------------------------------------------------
+    script                          <script>
+        $(function(){               $(function(){
+            $('.button').click(     $('.button').click(
+                function(e){        function(e){
+                   console.log(e);  console.log(e);
+                }                   }
+            );                      );
+        });                         });
+                                    </script>
 
 ### Comments
 
