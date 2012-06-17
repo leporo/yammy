@@ -4,3 +4,7 @@ syntax: glob
 *.pyc
 tmp
 language-specs
+syntax: regexp
+^dist$
+syntax: regexp
+^build$
