@@ -24,7 +24,7 @@ Yammy comes with the Jinja2 integration module.
 The simplest way to enable a Yammy template processing in your application looks roughly like this:
 
     from jinja2 import Environment
-    from yammy import YammyPackageLoader
+    from yammy.jinja2_loaders import YammyPackageLoader
     env = Environment(loader=YammyPackageLoader('yourapplication', 'templates'))
 
 Make sure you use .ymy or .yammy extension for your Yammy template files. 

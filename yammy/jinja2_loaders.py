@@ -1,6 +1,6 @@
 from jinja2.loaders import FileSystemLoader, PackageLoader
 
-from translator import yammy_to_html_string
+from yammy.translator import yammy_to_html_string
 
 
 class YammyLoaderMixin(object):
