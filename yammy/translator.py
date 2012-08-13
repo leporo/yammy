@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import weakref
 from string import ascii_letters, digits
 
@@ -366,11 +367,8 @@ def yammy_to_html_string(in_string):
 
 
 def yammy_to_html(in_file_name, out_file_name):
-    in_file = open(in_file_name, 'r')
-    try:
+    with open(in_file_name, 'r') as in_file:
         _input = YammyInputBuffer(in_file)
         output = YammyOutputFile(out_file_name)
         YammyTranslator(_input, output).translate()
-    finally:
-        in_file.close()
     return output.current_line
