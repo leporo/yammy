@@ -1,9 +1,14 @@
-from setuptools import setup, find_packages
+#!/usr/bin/env python
 
-version = '0.1'
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+VERSION = '0.3'
 
 setup(name='yammy',
-      version=version,
+      version=VERSION,
       description="Yammy: A better way to create a Django/Jinja template",
       long_description="Yammy is not a template engine. "
                        "It does not handle expressions or condition blocks. "
@@ -11,18 +16,13 @@ setup(name='yammy',
                        "and maintain an HTML template.",
       classifiers=[],
       keywords='templates html django python',
-      author='quasinerd',
-      author_email='',
+      author='Vlad Glushchuk',
+      author_email='high.slopes@gmail.com',
       url='https://bitbucket.org/quasinerd/yammy',
       license='GPL',
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-      include_package_data=True,
-      zip_safe=True,
-      install_requires=[
-          # -*- Extra requirements: -*-
-      ],
+      packages=['yammy'],
       entry_points={
           'console_scripts': [
-              'yammy = yammy.cli:main',
+              'yammy = yammy.yammy2html:main',
               ]},
       )

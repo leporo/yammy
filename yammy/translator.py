@@ -1,6 +1,6 @@
 from __future__ import with_statement
 import weakref
-from string import ascii_letters, digits
+from string import ascii_letters, digits, ascii_lowercase
 
 
 UNARY_HTML_TAGS = set('area,base,basefont,br,col,frame,hr,'
@@ -318,7 +318,7 @@ class YammyHTMLTag(YammyBlockTranslator):
             self.inner_line_types = (
                 ('-', YammyHTMLAttribute),
                 ('|\\', YammyHTMLInnerText),
-                (ascii_letters, YammyHTMLTag),
+                (ascii_lowercase, YammyHTMLTag),
                 (None, YammyHTMLInnerExpression),
             )
 
@@ -351,7 +351,7 @@ class YammyHTMLTag(YammyBlockTranslator):
 
 class YammyTranslator(YammyBlockTranslator):
     inner_line_types = (
-        (ascii_letters, YammyHTMLTag),
+        (ascii_lowercase, YammyHTMLTag),
     )
 
     def translate(self, context=None):
