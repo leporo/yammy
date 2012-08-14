@@ -4,6 +4,7 @@ syntax: glob
 *.pyc
 tmp
 language-specs
+yammy.egg-info
 syntax: regexp
 ^dist$
 syntax: regexp

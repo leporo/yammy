@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from translator import yammy_to_html
+from yammy.translator import yammy_to_html
 
 
 class Yammy2Html(object):
