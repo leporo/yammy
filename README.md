@@ -45,7 +45,8 @@ Jingo is an adapter for using Jinja2 templates within Django.
 
     from jingo import Loader
 
-Settings
+Settings.
+
 You'll want to use Django to use jingo's template loader. In settings.py.
     TEMPLATE_LOADERS = (
         'app.jingo_loader.Loader',
