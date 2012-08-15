@@ -30,6 +30,31 @@ The simplest way to enable a Yammy template processing in your application looks
 Make sure you use .ymy or .yammy extension for your Yammy template files. 
 Note you can also mix Yammy templates with HTML ones.  
 
+Jingo Integration
+------------------
+
+Jingo is an adapter for using Jinja2 templates within Django.
+
+    # app/jingo_loader.py
+    import jinja2
+
+    from yammy.jinja2_loaders import YammyPackageLoader, YammyFileSystemLoader
+
+    jinja2.FileSystemLoader = YammyFileSystemLoader
+    jinja2.PackageLoader = YammyPackageLoader
+
+    from jingo import Loader
+
+Settings.
+
+You'll want to use Django to use jingo's template loader. In settings.py.
+
+    TEMPLATE_LOADERS = (
+        'app.jingo_loader.Loader',
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )
+
 Syntax
 ------
 
