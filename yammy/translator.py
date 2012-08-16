@@ -70,9 +70,17 @@ class YammyOutputBuffer(object):
 
     def __init__(self):
         self.current_line = ''
+        self.current_line_no = 0
+        self.keep_line_numbers = False
 
     def __del__(self):
         self.flush()
+
+    def write_linebreak(self, source_line_no):
+        self.current_line_no += 1
+        if self.keep_line_numbers \
+        and self.current_line_no < source_line_no:
+            self.current_line += '\n' * (source_line_no - self.current_line_no)
 
     def write(self, line):
         self.current_line += line
@@ -115,6 +123,8 @@ class YammyBlockTranslator(object):
             self.input.next()
         except StopIteration:
             res = False
+        if res:
+            self.output.write_linebreak(self.input.line_number)
         return res
 
     def translate_inner_lines(self):
@@ -168,6 +178,44 @@ class YammyBlockTranslator(object):
                         n_position += 1
                 result = line[:n_position]
         return (result.strip(), line[n_position:].strip())
+
+
+class YammyDirective(YammyBlockTranslator):
+    '''
+    Switch Yammy translation mode off or on using
+    the !YAMMY, !PLAIN, !HTML or !TEXT directives.
+    '''
+    switches = {'yammy': True,
+                'plain': False,
+                'html': False,
+                'text': False}
+
+    def copy_line(self):
+        if self.input.indentation:
+            self.output.write(' ' * self.input.indentation)
+        self.output.write(self.input.line)
+
+    def translate(self, context=None):
+        processing_directive = True
+        translation_off = False
+        while processing_directive or translation_off:
+            l = self.input.line.strip()
+            if l[0] == '!':
+                l = l[1:].lower()
+                if l in self.switches:
+                    translation_off = not self.switches[l]
+                else:
+                    self.copy_line()
+                    if not processing_directive:
+                        self.output.write('\n')
+            else:
+                self.copy_line()
+                self.output.write('\n')
+            if not self.move_to_next_line():
+                break
+            if isinstance(context, dict):
+                context['text_line_no'] = context.get('text_line_no', 0) + 1
+            processing_directive = False
 
 
 class YammyClassInnerText(YammyBlockTranslator):
@@ -257,7 +305,6 @@ class YammyHTMLScript(YammyBlockTranslator):
 
         self.move_to_next_line()
 
-
 class YammyHTMLTag(YammyBlockTranslator):
 
     def translate(self, context=None):
@@ -313,6 +360,7 @@ class YammyHTMLTag(YammyBlockTranslator):
             self.inner_line_types = (
                 ('-', YammyHTMLAttribute),
                 ('', YammyHTMLScript),
+                ('!', YammyDirective),
             )
         else:
             self.inner_line_types = (
@@ -320,6 +368,7 @@ class YammyHTMLTag(YammyBlockTranslator):
                 ('|\\', YammyHTMLInnerText),
                 (ascii_lowercase, YammyHTMLTag),
                 (None, YammyHTMLInnerExpression),
+                ('!', YammyDirective),
             )
 
         self.output.write('<%s' % self.tag)
@@ -352,6 +401,7 @@ class YammyHTMLTag(YammyBlockTranslator):
 class YammyTranslator(YammyBlockTranslator):
     inner_line_types = (
         (ascii_lowercase, YammyHTMLTag),
+        ('!', YammyDirective),
     )
 
     def translate(self, context=None):
@@ -359,16 +409,18 @@ class YammyTranslator(YammyBlockTranslator):
         self.translate_inner_lines()
 
 
-def yammy_to_html_string(in_string):
+def yammy_to_html_string(in_string, keep_line_numbers=False):
     _input = YammyInputBuffer(in_string.split('\n'))
     output = YammyOutputBuffer()
+    output.keep_line_numbers = keep_line_numbers
     YammyTranslator(_input, output).translate()
     return output.current_line
 
 
-def yammy_to_html(in_file_name, out_file_name):
+def yammy_to_html(in_file_name, out_file_name, keep_line_numbers=False):
     with open(in_file_name, 'r') as in_file:
         _input = YammyInputBuffer(in_file)
         output = YammyOutputFile(out_file_name)
+        output.keep_line_numbers = keep_line_numbers
         YammyTranslator(_input, output).translate()
     return output.current_line

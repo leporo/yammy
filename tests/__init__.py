@@ -1,1 +1,1 @@
-from translator import TestYammyTranslator, TestYsammyInputBuffer
+from translator import TestYammyTranslator, TestYammyInputBuffer
