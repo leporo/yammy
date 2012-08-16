@@ -24,7 +24,7 @@ class YammyFileSystemLoader(FileSystemLoader, YammyLoaderMixin):
 
 class YammyPackageLoader(PackageLoader, YammyLoaderMixin):
 
-    def load_template_source(self, environment, template):
+    def load_template_source(self, template_name, template_dirs=None):
         source = super(YammyPackageLoader, self).load_template_source
         return self.get_html_source(source, template_name, template_dirs)
 

@@ -17,6 +17,17 @@ Yammy Template → Django/Jinja HTML Template → Web Page
     >>> from yammy import yammy_to_html_string
     >>> yammy_to_html_string('div\n    | Inner text')
 
+Django Integration
+------------------
+
+Settings.
+
+    TEMPLATE_LOADERS = (
+        'yammy.django_loaders.YammyFileSystemLoader',
+        'yammy.django_loaders.YammyPackageLoader',
+    )
+
+
 Jinja2 Integration
 ------------------
 
