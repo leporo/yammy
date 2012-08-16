@@ -1,0 +1,24 @@
+{ "name": "Yammy",
+  "scopeName": "text.yammy",
+  "fileTypes": ["ymy", "yammy"],
+  "patterns": [
+  	{
+  		"name": "entity.name.tag.html",
+  		"match": "^\\s*[a-z]?[a-z0-9]+",
+  		"comment": "HTML Tag"
+  	},
+  	{
+  		"name": "entity.other.attribute-name.html",
+  		"match": "^\\s*-\\s*[a-zA-Z-_0-9]+"
+  	},
+  	{
+  		"name": "string.quoted.single.html",
+  		"match": "{{.+}}"
+  	},
+  	{
+  		"name": "string.quoted.double.html",
+  		"match": "{%.+%}"
+  	}
+  ],
+  "uuid": "5259d955-e3d2-4eda-a6e2-258ef68292af"
+}
