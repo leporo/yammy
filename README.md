@@ -67,7 +67,7 @@ You'll want to use Django to use jingo's template loader. In settings.py.
     )
 
 Syntax
-------
+======
 
 The Yammy template syntax has much in common with the HAML, Slim and many other similar template engine languages.
 
@@ -77,6 +77,7 @@ Line meaning is being recognized by the first line's character:
  * Lines starting with the '-' character are HTML tag attributes.
  * Lines starting with the '|' (pipe character) define the HTML code and the text that occurs between that element's opening and closing tag.
  * Lines starting with the '#' character are comments.
+ * Lines starting with the '!' character are multiline escaping switchers.
 
 Empty lines and trailing spaces are ignored.
 
@@ -124,6 +125,27 @@ Tag nesting is being declared using indentation:
     {% if target.hit %}       {% if target.hit %}<div class="hit">Hit!</div>{% endif %}
         div.hit Hit!
     {% endif %}
+
+### Multiline escaping
+
+    Yammy                     Translates to
+    ------------------------- -----------------------------------------------------------
+    !PLAIN                    loren and ipsum
+    lorem and ipsum           ipsum and lorem
+    ipsum and lorem           <div class="clear"></div><p>
+                                  lorem and ipsum
+    !YAMMY                        ipsum and lorem
+                div.clear     </p>some really meaningless text
+
+    !HTML
+    <p>
+        lorem and ipsum
+        ipsum and lorem
+    </p>
+
+    !TEXT
+    some really meaningless text
+    
 
 ### Scripts and Styles
 

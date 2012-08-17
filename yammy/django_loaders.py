@@ -27,3 +27,15 @@ class YammyPackageLoader(PackageLoader, YammyLoaderMixin):
     def load_template_source(self, template_name, template_dirs=None):
         source = super(YammyPackageLoader, self).load_template_source
         return self.get_html_source(source, template_name, template_dirs)
+
+
+class YammyTemplateMiddleware(object):
+    """Renders Yammy templates ending in '.yammy' to HTML on the fly"""
+
+    def process_template_response(self, request, response):
+        template_name = response.resolve_template(response.template_name).name
+        if template_name.endswith(('.yammy', 'ymy')):
+            response.render()
+            content = yammy_to_html_string(response.rendered_content)
+            response._set_content(content)
+        return response
