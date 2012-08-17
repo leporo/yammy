@@ -6,6 +6,21 @@ Yammy strips unnecessary parts from HTML template and makes the template collabo
 
 So you may use Yammy Translator as preprocessor with your favorite template engine.
 
+Installation
+------------
+
+Yammy is available as PyPI package, so the easiest way to install Yammy is
+to use **pip** or **easy_install** Python package manager:
+
+    $ pip install yammy
+
+You may also clone Mercurial repository: 
+
+	$ hg clone https://quasinerd@bitbucket.org/quasinerd/yammy
+
+and manually add the **yammy** package to your project.
+
+
 Basic Usage
 -----------
 
@@ -20,7 +35,8 @@ Yammy Template → Django/Jinja HTML Template → Web Page
 Django Integration
 ------------------
 
-Settings.
+Configure Django to use template loaders provided by **yammy.django_loaders**
+module using the TEMPLATE_LOADERS option in your settings.py:
 
     TEMPLATE_LOADERS = (
         'yammy.django_loaders.YammyFileSystemLoader',
@@ -41,30 +57,35 @@ The simplest way to enable a Yammy template processing in your application looks
 Make sure you use .ymy or .yammy extension for your Yammy template files. 
 Note you can also mix Yammy templates with HTML ones.  
 
+
 Jingo Integration
-------------------
+-----------------
 
-Jingo is an adapter for using Jinja2 templates within Django.
+Jingo (http://pypi.python.org/pypi/jingo) is an adapter for using Jinja2
+templates within Django.
 
-    # app/jingo_loader.py
-    import jinja2
+The simpliest way to attach Yammy templates to Jingo adapter is by using a
+**yammy.jingo_loaders** module.  
 
-    from yammy.jinja2_loaders import YammyPackageLoader, YammyFileSystemLoader
-
-    jinja2.FileSystemLoader = YammyFileSystemLoader
-    jinja2.PackageLoader = YammyPackageLoader
-
-    from jingo import Loader
-
-Settings.
-
-You'll want to use Django to use jingo's template loader. In settings.py.
+Change the TEMPLATE_LOADERS setting in your settings.py as follows:
 
     TEMPLATE_LOADERS = (
-        'app.jingo_loader.Loader',
+        'yammy.jingo_loader.Loader',
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
     )
+
+This code also integrates Jingo/Jinga2 to your Django project.
+
+
+Command-Line Utility
+--------------------
+
+You may use the **yammy** command-line utility for the batch processing of
+Yammy templates:
+
+	yammy <source file or folder> [--dest=<destination file or folder name>]
+
 
 Syntax
 ======
@@ -177,7 +198,7 @@ To add a single-line comment start it with the '#' character:
         | Inner Text
 
 Advantages
-----------
+==========
 
 ### Readability
 
@@ -207,3 +228,11 @@ So it's much easier to figure out what has been changed:
 ### Compact resulting web pages
 
 The Yammy translator produces compact HTML code without extra space characters.
+
+
+Syntax Highlighting
+===================
+
+At this moment there are Yammy syntax highlighting files for the Sublime Text 2
+editor and Colorer Eclipse plugin. You may find the required files and
+installation instructions for each eaditor in in **editors** folder. 

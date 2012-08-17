@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-VERSION = '0.3'
+VERSION = '0.4'
 
 setup(name='yammy',
       version=VERSION,
@@ -21,8 +21,4 @@ setup(name='yammy',
       url='https://bitbucket.org/quasinerd/yammy',
       license='GPL',
       packages=['yammy'],
-      entry_points={
-          'console_scripts': [
-              'yammy = yammy.yammy2html:main',
-              ]},
-      )
+      entry_points={'console_scripts': ['yammy = yammy.cmdline:main', ]}, )
