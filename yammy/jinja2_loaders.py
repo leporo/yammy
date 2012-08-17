@@ -7,7 +7,7 @@ class YammyLoaderMixin(object):
 
     def get_html_source(self, get_source, environment, template):
         contents, filename, uptodate = get_source(environment, template)
-        if filename.endswith('.ymy') or filename.endswith('.yammy'):
+        if filename.endswith(('.ymy', '.yammy')):
             contents = yammy_to_html_string(contents)
         return contents, filename, uptodate
 

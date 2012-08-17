@@ -1,5 +1,3 @@
-from os.path import splitext
-
 from django.template.loaders.filesystem import Loader as FileSystemLoader
 from django.template.loaders.app_directories import Loader as PackageLoader
 
@@ -10,7 +8,7 @@ class YammyLoaderMixin(object):
 
     def get_html_source(self, get_source, template_name, template_dirs):
         contents, filename = get_source(template_name, template_dirs)
-        if splitext(filename)[1] in ['.ymy', '.yammy']:
+        if filename.endswith(('.ymy', '.yammy')):
             contents = yammy_to_html_string(contents)
         return contents, filename
 
