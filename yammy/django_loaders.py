@@ -1,5 +1,6 @@
 from django.template.loaders.filesystem import Loader as FileSystemLoader
 from django.template.loaders.app_directories import Loader as PackageLoader
+from django.conf import settings
 
 from yammy.translator import yammy_to_html_string
 
@@ -9,7 +10,8 @@ class YammyLoaderMixin(object):
     def get_html_source(self, get_source, template_name, template_dirs):
         contents, filename = get_source(template_name, template_dirs)
         if filename.endswith(('.ymy', '.yammy')):
-            contents = yammy_to_html_string(contents)
+            contents = yammy_to_html_string(contents,
+                                            keep_line_numbers=settings.DEBUG)
         return contents, filename
 
 
