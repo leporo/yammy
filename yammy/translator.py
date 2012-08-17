@@ -196,6 +196,9 @@ class YammyDirective(YammyBlockTranslator):
         self.output.write(self.input.line)
 
     def translate(self, context=None):
+        if self.parent_block \
+        and isinstance(self.parent_block, YammyHTMLTag):
+            self.parent_block.close_start_tag()
         processing_directive = True
         translation_off = False
         while processing_directive or translation_off:
@@ -305,6 +308,7 @@ class YammyHTMLScript(YammyBlockTranslator):
 
         self.move_to_next_line()
 
+
 class YammyHTMLTag(YammyBlockTranslator):
 
     def translate(self, context=None):
@@ -360,15 +364,14 @@ class YammyHTMLTag(YammyBlockTranslator):
             self.inner_line_types = (
                 ('-', YammyHTMLAttribute),
                 ('', YammyHTMLScript),
-                ('!', YammyDirective),
             )
         else:
             self.inner_line_types = (
                 ('-', YammyHTMLAttribute),
                 ('|\\', YammyHTMLInnerText),
                 (ascii_lowercase, YammyHTMLTag),
-                (None, YammyHTMLInnerExpression),
                 ('!', YammyDirective),
+                (None, YammyHTMLInnerExpression),
             )
 
         self.output.write('<%s' % self.tag)

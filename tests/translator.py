@@ -142,6 +142,19 @@ ipsum and lorem
 <div class="clear"></div>some really meaningless text
 <div class="clear"></div>''')
 
+    def test_on_and_off2(self):
+        self._check('''
+html
+    body
+        !HTML
+        <p>
+            Hi!
+        </p>''',
+        '''<html><body>        <p>
+            Hi!
+        </p>
+</body></html>''')
+
     def test_debug_mode(self):
         source_string = '''<div>test</div>
 div.wrapper
