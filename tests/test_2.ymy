@@ -59,7 +59,7 @@ div.settings_content
 {% block scripts %}
 script
 	var tabs = $A($$('.menu_tab'));
-    var menu_items = $A($$('.menu_item'));
+	var menu_items = $A($$('.menu_item'));
 	new TabMenu({
 		tabs: tabs,
 		menuItems: menu_items

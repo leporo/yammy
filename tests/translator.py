@@ -97,9 +97,13 @@ div
                     '<input type="submit"/>')
         self._check('input[type=submit]',
                     '<input type="submit"/>')
+        self._check('input[type=submit]',
+                    '<input type="submit"/>')
         self._check('option[value="10"][selected]',
                     '<option selected="selected" value="10"></option>')
         self._check('a.class#id[href="/"][id="new_id"] reference',
+                    '<a class="class" href="/" id="new_id">reference</a>')
+        self._check('a.class#id[href=/][id=new_id] reference',
                     '<a class="class" href="/" id="new_id">reference</a>')
 
     def test_files(self):
