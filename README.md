@@ -103,6 +103,7 @@ You may also use CSS-like selectors to define tag's attributes.
     
     input[type="submit"]      <input type="submit"/>
 
+    input[type=submit]        <input type="submit"/>
 
 ### Nesting
 
@@ -130,22 +131,17 @@ Tag nesting is being declared using indentation:
 
     Yammy                     Translates to
     ------------------------- -----------------------------------------------------------
-    !PLAIN                    loren and ipsum
-    lorem and ipsum           ipsum and lorem
-    ipsum and lorem           <div class="clear"></div><p>
-                                  lorem and ipsum
-    !YAMMY                        ipsum and lorem
-                div.clear     </p>some really meaningless text
-
-    !HTML
-    <p>
-        lorem and ipsum
-        ipsum and lorem
-    </p>
-
-    !TEXT
-    some really meaningless text
-    
+    html                      <html><body><div>            <p>Hi!</p>
+        body                  <p>                How are you?
+            div                               Good!
+                !HTML         </p></div></body></html>
+                <p>Hi!</p>
+                !YAMMY
+                p
+                    !TEXT
+                    How are you?
+                    !PLAIN
+                    Good!
 
 ### Scripts and Styles
 
