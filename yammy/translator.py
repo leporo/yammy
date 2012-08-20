@@ -93,17 +93,28 @@ class YammyOutputBuffer(object):
 
 class YammyOutputFile(YammyOutputBuffer):
 
-    def __init__(self, filename):
+    def __init__(self, output_file):
         super(YammyOutputFile, self).__init__()
-        self.file = open(filename, 'w')
+        self.close_on_destroy = False
+        # Check if output_file argument is a file object
+        if hasattr(output_file, 'write'):
+            self.file = output_file
+        else:
+            # Open it if it's a file name
+            self.close_on_destroy = True
+            self.file = open(output_file, 'wb')
 
     def __del__(self):
         self.flush()
-        self.file.close()
+        if self.close_on_destroy:
+            self.file.close()
 
     def flush(self):
         if(self.current_line):
-            self.file.write(self.current_line)
+            try:
+                self.file.write(self.current_line)
+            except TypeError:
+                self.file.write(bytes(self.current_line, 'UTF-8'))
             self.current_line = ''
 
 
@@ -422,10 +433,10 @@ def yammy_to_html_string(in_string, keep_line_numbers=False):
     return output.current_line
 
 
-def yammy_to_html(in_file_name, out_file_name, keep_line_numbers=False):
+def yammy_to_html(in_file_name, output_file, keep_line_numbers=False):
     with open(in_file_name, 'r') as in_file:
         _input = YammyInputBuffer(in_file)
-        output = YammyOutputFile(out_file_name)
+        output = YammyOutputFile(output_file)
         output.keep_line_numbers = keep_line_numbers
         YammyTranslator(_input, output).translate()
     return output.current_line

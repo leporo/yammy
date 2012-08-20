@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-from os import path, walk
+import sys
+from os import path, walk, makedirs
 from argparse import ArgumentParser
 
 from yammy import yammy_to_html, VERSION
@@ -27,20 +28,28 @@ class Yammy2Html(object):
                                  'the same as in the source')
         return parser.parse_args()
 
-    def process_template(self, yammy_template, yammy_root_dir=None):
-        if self.args.dest:
-            mid_dir = yammy_template.replace(yammy_root_dir, '', 1)
-            mid_dir = path.dirname(mid_dir)
-            dest_dir = path.join(self.args.dest, mid_dir)
-        else:
-            dest_dir = yammy_root_dir or path.dirname(yammy_template)
+    def process_template(self, yammy_template,
+                         yammy_root_dir=None,
+                         output_file=None):
+        if not output_file:
+            yammy_root_dir = path.realpath(yammy_root_dir)
+            if self.args.dest:
+                mid_dir = yammy_template.replace(yammy_root_dir, '', 1)
+                mid_dir = path.dirname(mid_dir)
+                dest_dir = path.join(self.args.dest, mid_dir)
+            else:
+                dest_dir = yammy_root_dir or path.dirname(yammy_template)
 
-        tpl_basename = path.basename(yammy_template)
-        tpl_ext = path.splitext(tpl_basename)[0] + self.args.dest_ext
-        dest_file_name = path.join(dest_dir, tpl_ext)
+            if not path.exists(dest_dir):
+                makedirs(dest_dir)
 
-        print(('{} --> {}'.format(yammy_template, dest_file_name)))
-        yammy_to_html(yammy_template, dest_file_name,
+            tpl_basename = path.basename(yammy_template)
+            tpl_ext = path.splitext(tpl_basename)[0] + self.args.dest_ext
+            dest_file_name = path.join(dest_dir, tpl_ext)
+
+            print(('{} --> {}'.format(yammy_template, dest_file_name)))
+            output_file = dest_file_name
+        yammy_to_html(yammy_template, output_file,
                       keep_line_numbers=self.args.debug)
 
     def run(self):
@@ -55,10 +64,11 @@ class Yammy2Html(object):
                                     yammy_root_dir=yammy_template,
                                     )
             else:
+                output_file = sys.stdout if not self.args.dest else None
                 self.process_template(
-                        yammy_template,
-                        yammy_root_dir=path.dirname(yammy_template),
-                        )
+                    yammy_template,
+                    yammy_root_dir=path.dirname(yammy_template),
+                    output_file=output_file)
 
 
 def main():

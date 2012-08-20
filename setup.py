@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-VERSION = '0.4'
+VERSION = '0.5'
 
 setup(name='yammy',
       version=VERSION,
