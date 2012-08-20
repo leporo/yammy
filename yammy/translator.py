@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 import weakref
 from string import ascii_letters, digits, ascii_lowercase
 
@@ -28,9 +28,12 @@ class YammyInputBuffer(object):
         return self
 
     def next(self):
+        return self.__next__()
+
+    def __next__(self):
         while True:
             try:
-                line = self.input.next()
+                line = next(self.input)
                 self.line_number += 1
             except StopIteration:
                 self._current_line = ''
@@ -60,7 +63,7 @@ class YammyInputBuffer(object):
     def line(self):
         if self._current_line is None:
             try:
-                self.next()
+                next(self)
             except StopIteration:
                 self._current_line = ''
         return self._current_line
@@ -120,7 +123,7 @@ class YammyBlockTranslator(object):
     def move_to_next_line(self):
         res = True
         try:
-            self.input.next()
+            next(self.input)
         except StopIteration:
             res = False
         if res:

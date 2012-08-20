@@ -39,7 +39,7 @@ class Yammy2Html(object):
         tpl_ext = path.splitext(tpl_basename)[0] + self.args.dest_ext
         dest_file_name = path.join(dest_dir, tpl_ext)
 
-        print('{} --> {}'.format(yammy_template, dest_file_name))
+        print(('{} --> {}'.format(yammy_template, dest_file_name)))
         yammy_to_html(yammy_template, dest_file_name,
                       keep_line_numbers=self.args.debug)
 
