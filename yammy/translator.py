@@ -1,4 +1,3 @@
-
 import weakref
 from string import ascii_letters, digits, ascii_lowercase
 
@@ -46,7 +45,7 @@ class YammyInputBuffer(object):
                 while (p < len(line)):
                     c = line[p]
                     if c == '\t':
-                        tab_width = ((p + TAB_WIDTH) / TAB_WIDTH) \
+                        tab_width = int((p + TAB_WIDTH) / TAB_WIDTH) \
                                   * TAB_WIDTH - p
                         line = line[:p] + ' ' * tab_width + line[p + 1:]
                         p += tab_width

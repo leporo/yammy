@@ -9,7 +9,7 @@ class TestYammyTranslator(unittest.TestCase):
 
     def _check(self, yammy, html):
         translated_html = yammy_to_html_string(yammy)
-        self.failUnlessEqual(html, translated_html)
+        self.assertEqual(html, translated_html)
 
     def _compare_files(self, source, dest, ignore_spaces=False):
         with open(source) as f:
@@ -27,8 +27,8 @@ class TestYammyTranslator(unittest.TestCase):
                     p += 1
                 else:
                     break
-            print '\nBAD : %s\nGOOD: %s' % (source_content[p - 10:p + 10],
-                                            dest_content[p - 10:p + 10])
+            print('\nBAD : %s\nGOOD: %s' % (source_content[p - 10:p + 10],
+                                            dest_content[p - 10:p + 10]))
         return same
 
     def _do_translate_file(self, yammy_file, html_file,
@@ -43,7 +43,7 @@ class TestYammyTranslator(unittest.TestCase):
                                        ignore_spaces=keep_line_numbers)
         finally:
             os.unlink(tmp_html)
-        self.failUnless(same, msg='%s translation failed' % yammy_file)
+        self.assertTrue(same, msg='%s translation failed' % yammy_file)
 
     def _translate_file(self, yammy_file, html_file):
         self._do_translate_file(yammy_file, html_file, keep_line_numbers=False)
@@ -169,7 +169,7 @@ div.wrapper
 
         translated_html = yammy_to_html_string(source_string,
                                                keep_line_numbers=True)
-        self.failUnlessEqual(html, translated_html)
+        self.assertEqual(html, translated_html)
 
 
 class TestYammyInputBuffer(unittest.TestCase):
