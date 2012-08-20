@@ -433,10 +433,16 @@ def yammy_to_html_string(in_string, keep_line_numbers=False):
     return output.current_line
 
 
-def yammy_to_html(in_file_name, output_file, keep_line_numbers=False):
-    with open(in_file_name, 'r') as in_file:
+def yammy_to_html(input_file, output_file, keep_line_numbers=False):
+    def translate_file(in_file):
         _input = YammyInputBuffer(in_file)
         output = YammyOutputFile(output_file)
         output.keep_line_numbers = keep_line_numbers
         YammyTranslator(_input, output).translate()
-    return output.current_line
+        return output.current_line
+
+    if hasattr(input_file, 'read'):
+        return translate_file(input_file)
+    else:
+        with open(input_file, 'r') as in_file:
+            return translate_file(in_file)

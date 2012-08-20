@@ -12,7 +12,7 @@ class Yammy2Html(object):
         parser = ArgumentParser(description='Yammy template preprocessor '
                                             'command-line utility v.%s.'
                                            % VERSION)
-        parser.add_argument('yammy_templates', metavar='source', nargs='+',
+        parser.add_argument('yammy_templates', metavar='source', nargs='*',
                             help='a Yammy template file name or '
                                  'a name of a directory containing '
                                  'Yammy templates')
@@ -54,21 +54,30 @@ class Yammy2Html(object):
 
     def run(self):
         self.args = args = self.parse_arguments()
-        for yammy_template in args.yammy_templates:
-            if path.isdir(yammy_template):
-                for dirpath, _, filenames in walk(yammy_template):
-                    for filename in filenames:
-                        if filename.lower().endswith(('ymy', 'yammy')):
-                            self.process_template(
-                                    path.join(dirpath, filename),
-                                    yammy_root_dir=yammy_template,
-                                    )
-            else:
-                output_file = sys.stdout if not self.args.dest else None
-                self.process_template(
-                    yammy_template,
-                    yammy_root_dir=path.dirname(yammy_template),
-                    output_file=output_file)
+        if not args.yammy_templates:
+            # Read from stdin
+            yammy_to_html(sys.stdin, sys.stdout,
+                          keep_line_numbers=self.args.debug)
+        else:
+            for yammy_template in args.yammy_templates:
+                if path.isdir(yammy_template):
+                    for dirpath, _, filenames in walk(yammy_template):
+                        for filename in filenames:
+                            if filename.lower().endswith(('ymy', 'yammy')):
+                                self.process_template(
+                                        path.join(dirpath, filename),
+                                        yammy_root_dir=yammy_template,
+                                        )
+                else:
+                    if len(args.yammy_templates) == 1 \
+                    and not self.args.dest:
+                        output_file = sys.stdout
+                    else:
+                        output_file = None
+                    self.process_template(
+                        yammy_template,
+                        yammy_root_dir=path.dirname(yammy_template),
+                        output_file=output_file)
 
 
 def main():
