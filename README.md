@@ -32,6 +32,24 @@ Yammy Template → Django/Jinja HTML Template → Web Page
     >>> from yammy import yammy_to_html_string
     >>> yammy_to_html_string('div\n    | Inner text')
 
+
+Command-Line Utility
+--------------------
+
+You may use the **yammy** command-line utility for the batch processing of
+Yammy templates:
+
+	yammy <source file or folder> [--dest=<destination file or folder name>]
+
+
+Integration
+===========
+
+Yammy integrates with Django, Jinja2 and Jingo (and any other thing you want).
+Make sure you use .ymy or .yammy extension for your Yammy template files. 
+Note you can also mix Yammy templates with HTML ones.  
+
+
 Django Integration
 ------------------
 
@@ -54,9 +72,6 @@ The simplest way to enable a Yammy template processing in your application looks
     from yammy.jinja2_loaders import YammyPackageLoader
     env = Environment(loader=YammyPackageLoader('yourapplication', 'templates'))
 
-Make sure you use .ymy or .yammy extension for your Yammy template files. 
-Note you can also mix Yammy templates with HTML ones.  
-
 
 Jingo Integration
 -----------------
@@ -76,15 +91,6 @@ Change the TEMPLATE_LOADERS setting in your settings.py as follows:
     )
 
 This code also integrates Jingo/Jinga2 to your Django project.
-
-
-Command-Line Utility
---------------------
-
-You may use the **yammy** command-line utility for the batch processing of
-Yammy templates:
-
-	yammy <source file or folder> [--dest=<destination file or folder name>]
 
 
 Syntax
