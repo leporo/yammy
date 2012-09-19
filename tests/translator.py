@@ -171,6 +171,21 @@ div.wrapper
                                                keep_line_numbers=True)
         self.assertEqual(html, translated_html)
 
+    def test_debug_mode2(self):
+        yammy_string = '''link
+    - rel stylesheet/less
+    - type text/css
+    - media all
+    - href {{ STATIC_URL }}css/base.less'''
+        html = '''<link
+ rel="stylesheet/less"
+ type="text/css"
+ media="all"
+ href="{{ STATIC_URL }}css/base.less"/>'''
+        translated_html = yammy_to_html_string(yammy_string,
+                                               keep_line_numbers=True)
+        self.assertEqual(html, translated_html)
+
 
 class TestYammyInputBuffer(unittest.TestCase):
 

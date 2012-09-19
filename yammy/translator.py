@@ -74,15 +74,26 @@ class YammyOutputBuffer(object):
         self.current_line = ''
         self.current_line_no = 0
         self.keep_line_numbers = False
+        self.allow_breaks = True
+        self.breaks = ''
 
     def __del__(self):
         self.flush()
+
+    def set_linebreaks(self, allow=True):
+        self.allow_breaks = allow
+        if allow and self.breaks:
+            self.current_line += self.breaks
+            self.breaks = ''
 
     def write_linebreak(self, source_line_no):
         self.current_line_no += 1
         if self.keep_line_numbers \
         and self.current_line_no < source_line_no:
-            self.current_line += '\n' * (source_line_no - self.current_line_no)
+            self.breaks += '\n' * (source_line_no - self.current_line_no)
+            if self.allow_breaks:
+                self.current_line += self.breaks
+                self.breaks = ''
 
     def write(self, line):
         self.current_line += line
@@ -269,6 +280,7 @@ class YammyHTMLAttribute(YammyBlockTranslator):
         else:
             self.output.write(' %s' % attribute_value)
 
+        self.output.set_linebreaks(False)
         self.move_to_next_line()
         if attribute_name.lower() == 'class':
             self.inner_line_types = (('', YammyClassInnerText), )
@@ -278,6 +290,7 @@ class YammyHTMLAttribute(YammyBlockTranslator):
 
         if attribute_name:
             self.output.write('"')
+        self.output.set_linebreaks(True)
 
 
 class YammyHTMLInnerText(YammyBlockTranslator):
