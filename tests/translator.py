@@ -186,6 +186,21 @@ div.wrapper
                                                keep_line_numbers=True)
         self.assertEqual(html, translated_html)
 
+    def test_issue_13(self):
+        yammy_string = '''
+p
+    a
+    {% if True %}
+    a
+        Multi
+        Line
+        Text
+    {% endif %}
+'''
+        html_string = '<p><a></a>{% if True %}<a>Multi Line Text</a>{% endif %}</p>'
+        translated_html = yammy_to_html_string(yammy_string)
+        self.assertEqual(html_string, translated_html)
+
 
 class TestYammyInputBuffer(unittest.TestCase):
 

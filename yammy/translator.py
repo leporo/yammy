@@ -338,6 +338,7 @@ class YammyHTMLScript(YammyBlockTranslator):
 class YammyHTMLTag(YammyBlockTranslator):
 
     def translate(self, context=None):
+        context['text_line_no'] = 0
         self.tag = ''
         self.start_tag_closed = False
         if self.parent_block and isinstance(self.parent_block, YammyHTMLTag):

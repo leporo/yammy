@@ -5,6 +5,7 @@ syntax: glob
 tmp
 language-specs
 yammy.egg-info
+.idea
 syntax: regexp
 ^dist$
 syntax: regexp

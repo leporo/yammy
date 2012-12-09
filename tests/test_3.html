@@ -20,12 +20,12 @@
 {% set dummy = dark_col.reset() %}
 <td class="{{ style.col_class[dark_col.next()] }}">{{sharing.name}}</td>
 <td class="{{ style.col_class[dark_col.next()] }}">
-{% for email in sharing.email_list %}<p>{{ email }}</p> {% endfor %}
+{% for email in sharing.email_list %}<p>{{ email }}</p>{% endfor %}
 </td>
 <td class="{{ style.col_class[dark_col.next()] }}">
-{% for domain in sharing.domain_list %}<p>{{ domain }}</p> {% endfor %}
+{% for domain in sharing.domain_list %}<p>{{ domain }}</p>{% endfor %}
 </td>
-<td class="{{ style.col_class[dark_col.next()] }}"><a class="form_popattach" link="/projects/sharing_settings/{{sharing.id}}/">edit</a></td></tr> {% endfor %}</tbody></table>{% endif %}{% endblock %}{% block scripts %}{{ super() }}
+<td class="{{ style.col_class[dark_col.next()] }}"><a class="form_popattach" link="/projects/sharing_settings/{{sharing.id}}/">edit</a></td></tr>{% endfor %}</tbody></table>{% endif %}{% endblock %}{% block scripts %}{{ super() }}
 {% if not report %}
 <script src="/js/tremors.js" type="text/javascript"></script>
 {% endif %}
