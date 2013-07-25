@@ -17,6 +17,7 @@ Why Did We Started It
 Yammy was started as an experiment aimed to solve template merge troubles.
 
 We often had a situations like this:
+
 * some guy adds some classes or markups used by Javascript he develops,
 * other guy fixes a browser-related issue by changing the same template lines,
 * and their work gets totally ruined when it comes to merge and resolving of merge conflicts.
@@ -26,6 +27,7 @@ There were far too many merge conflicts because of all those really long lines w
 There were far too many characters on changed lines to understand what other developer did and how the merged code should look like.
 
 We started with the following thoughts:
+
 * It's much easier to solve conflicts in source files then in HTML templates simply because lines in source files are much shorter;
 * It would be better to use indentation for nested tags just to stop loosing and misplacing closing tags,
 * It would be better to use indentation just to make templates look great,
@@ -270,12 +272,12 @@ editor and Colorer Eclipse plugin.
 Sublime Text
 ------------
 
-Use [Package Control](http://wbond.net/sublime_packages/package_control) to install the Yammy Syntax Highlighting package.
+Use [Package Control](http://wbond.net/sublime_packages/package_control) to install the [Yammy Syntax Highlighting](https://github.com/leporo/SublimeYammy) package.
 
 PyCharm
 -------
 
-Clone the Sublime Text Yammy Syntax Highlighing package from GitHub repository and register this folder to the list of TextMate packages in PyCharm settings.
+Clone the Sublime Text [Yammy Syntax Highlighting](https://github.com/leporo/SublimeYammy) package from GitHub repository and register this folder to the list of TextMate packages in PyCharm settings.
 
 Make sure to define the IDE to TextMate color scheme map for Default scheme or you may get a package loading error.
 
