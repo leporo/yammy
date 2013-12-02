@@ -16,25 +16,24 @@ class YammyLoaderMixin(object):
 
 
 class YammyFileSystemLoader(FileSystemLoader, YammyLoaderMixin):
-    '''
+    """
     Overrides Django FileSystemLoader and adds a Yammy template
     processing to it.
 
     The actual processing takes place at YammyLoaderMixin class.
-    '''
+    """
     def load_template_source(self, template_name, template_dirs=None):
         source = super(YammyFileSystemLoader, self).load_template_source
         return self.get_html_source(source, template_name, template_dirs)
 
 
 class YammyPackageLoader(PackageLoader, YammyLoaderMixin):
-    '''
+    """
     Overrides Django PackageLoader and adds a Yammy template
     processing to it.
 
     The actual processing takes place at YammyLoaderMixin class.
-    '''
-
+    """
     def load_template_source(self, template_name, template_dirs=None):
         source = super(YammyPackageLoader, self).load_template_source
         return self.get_html_source(source, template_name, template_dirs)

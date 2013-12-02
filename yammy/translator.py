@@ -88,9 +88,11 @@ class YammyOutputBuffer(object):
 
     def write_linebreak(self, source_line_no):
         self.current_line_no += 1
-        if self.keep_line_numbers \
-        and self.current_line_no < source_line_no:
-            self.breaks += '\n' * (source_line_no - self.current_line_no)
+        if self.keep_line_numbers and self.current_line_no < source_line_no:
+            number_of_linebreaks = (source_line_no - self.current_line_no)
+            self.breaks += '\n' * number_of_linebreaks
+            if number_of_linebreaks > 1:
+                self.current_line_no += number_of_linebreaks - 1
             if self.allow_breaks:
                 self.current_line += self.breaks
                 self.breaks = ''
@@ -181,9 +183,9 @@ class YammyBlockTranslator(object):
 
     def get_line_part(self, line, delimiters=' ', allow_quotes=False,
                       allowed_chars=None):
-        '''
+        """
         Returns (part, line_remainder)
-        '''
+        """
         result = ''
         n_position = 0
         if line:
@@ -195,8 +197,7 @@ class YammyBlockTranslator(object):
                 n_position = len(result) + 2
             else:
                 for c in line:
-                    if c in delimiters \
-                    or (allowed_chars and c not in allowed_chars):
+                    if (c in delimiters or (allowed_chars and c not in allowed_chars)):
                         break
                     else:
                         n_position += 1
@@ -205,10 +206,10 @@ class YammyBlockTranslator(object):
 
 
 class YammyDirective(YammyBlockTranslator):
-    '''
+    """
     Switch Yammy translation mode off or on using
     the !YAMMY, !PLAIN, !HTML or !TEXT directives.
-    '''
+    """
     switches = {'yammy': True,
                 'plain': False,
                 'html': False,
@@ -370,7 +371,7 @@ class YammyHTMLTag(YammyBlockTranslator):
                     attr_value = attr_name
                 else:
                     (attr_value, line) = self.get_line_part(line[1:],
-                                                            delimiters=' ]',
+                                                            delimiters=']',
                                                             allow_quotes=True)
                 tag_attributes[attr_name] = attr_value
                 # Skip the closing square bracket

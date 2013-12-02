@@ -256,7 +256,7 @@ The simpliest way to attach Yammy templates to Jingo adapter is by using the
 Change the TEMPLATE_LOADERS setting in your settings.py as follows:
 
     TEMPLATE_LOADERS = (
-        'yammy.jingo_loader.Loader',
+        'yammy.jingo_loaders.Loader',
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
     )

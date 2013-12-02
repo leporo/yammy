@@ -11,11 +11,18 @@ class TestYammyTranslator(unittest.TestCase):
         translated_html = yammy_to_html_string(yammy)
         self.assertEqual(html, translated_html)
 
-    def _compare_files(self, source, dest, ignore_spaces=False):
+    def _compare_files(self, source, dest,
+                       ignore_spaces=False, count_lines=False):
         with open(source) as f:
-            source_content = ''.join([l.strip() for l in f.readlines()])
+            source_lines = f.readlines()
         with open(dest) as f:
-            dest_content = ''.join([l.strip() for l in f.readlines()])
+            dest_lines = f.readlines()
+        source_content = ''.join([l.strip() for l in source_lines])
+        dest_content = ''.join([l.strip() for l in dest_lines])
+        if count_lines:
+            self.assertEqual(len(source_lines), len(dest_lines),
+                             'The number of lines in the output file '
+                             'does not match the source')
         if ignore_spaces:
             source_content = source_content.replace(' ', '')
             dest_content = dest_content.replace(' ', '')
@@ -23,7 +30,7 @@ class TestYammyTranslator(unittest.TestCase):
         if not same:
             p = 0
             for c in source_content:
-                if c == dest_content[p]:
+                if p < len(dest_content) and c == dest_content[p]:
                     p += 1
                 else:
                     break
@@ -40,14 +47,15 @@ class TestYammyTranslator(unittest.TestCase):
                           tmp_html,
                           keep_line_numbers=keep_line_numbers)
             same = self._compare_files(tmp_html, html_file,
-                                       ignore_spaces=keep_line_numbers)
+                                       ignore_spaces=keep_line_numbers,
+                                       count_lines=keep_line_numbers)
         finally:
             os.unlink(tmp_html)
         self.assertTrue(same, msg='%s translation failed' % yammy_file)
 
     def _translate_file(self, yammy_file, html_file):
-        self._do_translate_file(yammy_file, html_file, keep_line_numbers=False)
         self._do_translate_file(yammy_file, html_file, keep_line_numbers=True)
+        self._do_translate_file(yammy_file, html_file, keep_line_numbers=False)
 
     def test_css_class_id(self):
         self._check(
@@ -105,17 +113,20 @@ div
                     '<a class="class" href="/" id="new_id">reference</a>')
         self._check('a.class#id[href=/][id=new_id] reference',
                     '<a class="class" href="/" id="new_id">reference</a>')
+        self._check('a.class#id[href={% url \'view\' %}][id=new_id] reference',
+                    '<a class="class" href="{% url \'view\' %}" id="new_id">reference</a>')
 
     def test_files(self):
-        module_path = os.sep.join(__name__.split('.')[:-1])
-        filenames = tuple(os.walk(module_path))[0][2]
+        ymy_path = os.sep.join(__name__.split('.')[:-1] + ['ymy_source'])
+        html_path = ymy_path.replace('ymy_source', 'html_output')
+        filenames = tuple(os.walk(ymy_path))[0][2]
         for filename in filenames:
+            if not '_6' in filename:
+                continue
             if filename[-4:] == '.ymy':
                 self._translate_file(
-                    os.sep.join([module_path, filename]),
-                    os.sep.join([module_path,
-                                 filename.replace('.ymy', '.html')])
-                )
+                    os.sep.join([ymy_path, filename]),
+                    os.sep.join([html_path, filename.replace('.ymy', '.html')]))
 
     def test_on_off(self):
         self._check(
@@ -200,10 +211,3 @@ p
         html_string = '<p><a></a>{% if True %}<a>Multi Line Text</a>{% endif %}</p>'
         translated_html = yammy_to_html_string(yammy_string)
         self.assertEqual(html_string, translated_html)
-
-
-class TestYammyInputBuffer(unittest.TestCase):
-
-    def test_iteration(self):
-        for l in YammyInputBuffer(['test']):
-            self.assertEqual(l, 'test')
